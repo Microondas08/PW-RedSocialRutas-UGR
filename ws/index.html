@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>AJAX GET Request</title>
+</head>
+
+<body>
+<input type="text" id="queryInput" placeholder="Parámetro de consulta" accept-charset="UTF-8">
+  <button onclick="getUsers()">Obtener Usuarios</button>
+  <table id="userList">
+    <thead>
+      <tr>
+        <th>Usuario y nombre</th>
+        <th>Actividad Favorita</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    function getUsers() {
+      var xhr = new XMLHttpRequest();
+      var query = document.getElementById('queryInput').value;
+
+      xhr.open('GET', 'http://localhost/RedSocialRutas/ws/servidor.php?query=' + query, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var response = JSON.parse(xhr.responseText);
+          displayUsers(response);
+        }
+      };
+      xhr.send();
+    }
+
+    function displayUsers(users) {
+      var userList = document.querySelector('#userList tbody');
+      userList.innerHTML = '';
+
+      for (var i = 0; i < users.length; i++) {
+        var user = users[i];
+        var row = document.createElement('tr');
+        var userNameCell = document.createElement('td');
+        var activity_typeCell = document.createElement('td');
+
+        userNameCell.textContent = user.name;
+        activity_typeCell.textContent = user.activity_type;
+
+        row.appendChild(userNameCell);
+        row.appendChild(activity_typeCell);
+
+        userList.appendChild(row);
+      }
+    }
+  </script>
+</body>
+
+</html>
